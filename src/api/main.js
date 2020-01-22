@@ -1,6 +1,7 @@
 const SETTINGS = require("../settings/settings");
 const MACHINERY_ENDPOINTS = require("../database/machinery/queries");
 const PROJECT_ENDPOINTS = require("../database/project/queries");
+const TASKS_ENDPOINTS = require("../database/tasks/queries");
 const APP = SETTINGS.APP;
 const POOL = SETTINGS.POOL;
 const PORT = SETTINGS.PORT;
@@ -67,6 +68,37 @@ APP.post("/project/project/update/", (request, response) => {
 
 APP.post("/project/industry/list/", (request, response) => {
   PROJECT_ENDPOINTS.getIndustryList(request, response, POOL);
+});
+
+/**
+ *  *Endpoints used by @TaskService
+ */
+APP.post("/tasks/task/create/", (request, response) => {
+  TASKS_ENDPOINTS.createTask(request, response, POOL);
+});
+
+APP.post("/tasks/task/update/", (request, response) => {
+  TASKS_ENDPOINTS.updateTask(request, response, POOL);
+});
+
+APP.post("/tasks/task/", (request, response) => {
+  TASKS_ENDPOINTS.getTask(request, response, POOL);
+});
+
+APP.post("/tasks/task/delete/", (request, response) => {
+  TASKS_ENDPOINTS.deleteTask(request, response, POOL);
+});
+
+APP.post("/tasks/task/mark-completed/", (request, response) => {
+  TASKS_ENDPOINTS.markTaskAsCompleted(request, response, POOL);
+});
+
+APP.post("/tasks/task/list/", (request, response) => {
+  TASKS_ENDPOINTS.getTaskList(request, response, POOL);
+});
+
+APP.post("/tasks/task/status/list/", (request, response) => {
+  TASKS_ENDPOINTS.getTaskStatusList(request, response, POOL);
 });
 
 APP.listen(PORT, () => {
