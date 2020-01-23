@@ -1,5 +1,35 @@
 const mssql = require("mssql");
 
+const addMachineryToProject = (request, response, pool) => {
+  const { machineryPk, projectPk } = request.body;
+  pool.then(pool => {
+    const request = new mssql.Request(pool);
+    request.input("inMachineryPk", mssql.UniqueIdentifier, machineryPk);
+    request.input("inProjectPk", mssql.UniqueIdentifier, projectPk);
+    request.output("outCreated", mssql.Bit);
+    request.output("outMessage", mssql.VarChar(254));
+    request.execute("uspAddMachineryToProject", (error, results) => {
+      if (error) {
+        console.error(error);
+        response
+          .status(500)
+          .json({
+            "error": true,
+            "message": error.message
+          });
+      }
+      response.status(200).json(results.output);
+    })
+  }).catch(error => {
+    response
+      .status(500)
+      .json({
+        "error": true,
+        "message": error.message
+      });
+  });
+}
+
 const createProject = (request, response, pool) => {
   const {
     code,
@@ -23,6 +53,35 @@ const createProject = (request, response, pool) => {
     request.output("outMessage", mssql.VarChar(254));
     request.output("outProjectPk", mssql.UniqueIdentifier);
     request.execute("uspCreateProject", (error, results) => {
+      if (error) {
+        response
+          .status(500)
+          .json({
+            "error": true,
+            "message": error.message
+          });
+      }
+      response.status(200).json(results.output);
+    })
+  }).catch(error => {
+    response
+      .status(500)
+      .json({
+        "error": true,
+        "message": error.message
+      });
+  });
+}
+
+const deleteMachineryFromProject = (request, response, pool) => {
+  const { machineryPk, projectPk } = request.body;
+  pool.then(pool => {
+    const request = new mssql.Request(pool);
+    request.input("inMachineryPk", mssql.UniqueIdentifier, machineryPk);
+    request.input("inProjectPk", mssql.UniqueIdentifier, projectPk);
+    request.output("outDeleted", mssql.Bit);
+    request.output("outMessage", mssql.VarChar(254));
+    request.execute("uspDeleteMachineryFromProject", (error, results) => {
       if (error) {
         response
           .status(500)
@@ -94,10 +153,92 @@ const getProject = (request, response, pool) => {
   });
 }
 
+const getProjectInformation = (request, response, pool) => {
+  const { projectPk } = request.body;
+  pool.then(pool => {
+    const request = new mssql.Request(pool);
+    request.input("inProjectPk", mssql.UniqueIdentifier, projectPk);
+    request.output("outProgress", mssql.SmallInt);
+    request.output("outCompletedTasks", mssql.SmallInt);
+    request.output("outTasksInProgress", mssql.SmallInt);
+    request.output("outTasksDelayed", mssql.SmallInt);
+    request.execute("uspGetProjectInformation", (error, results) => {
+      if (error) {
+        response
+          .status(500)
+          .json({
+            "error": true,
+            "message": error.message
+          });
+      }
+      response.status(200).json(results.output);
+    })
+  }).catch(error => {
+    response
+      .status(500)
+      .json({
+        "error": true,
+        "message": error.message
+      });
+  });
+}
+
 const getProjectList = (request, response, pool) => {
   pool.then(pool => {
     const request = new mssql.Request(pool);
     request.execute("uspGetProjectList", (error, results) => {
+      if (error) {
+        response
+          .status(500)
+          .json({
+            "error": true,
+            "message": error.message
+          });
+      }
+      response.status(200).json(results.recordset);
+    })
+  }).catch(error => {
+    response
+      .status(500)
+      .json({
+        "error": true,
+        "message": error.message
+      });
+  });
+}
+
+const getMachineryListToAdd = (request, response, pool) => {
+  const { projectPk } = request.body
+  pool.then(pool => {
+    const request = new mssql.Request(pool);
+    request.input("inProjectPk", mssql.UniqueIdentifier, projectPk);
+    request.execute("uspGetMachineryListToAdd", (error, results) => {
+      if (error) {
+        response
+          .status(500)
+          .json({
+            "error": true,
+            "message": error.message
+          });
+      }
+      response.status(200).json(results.recordset);
+    })
+  }).catch(error => {
+    response
+      .status(500)
+      .json({
+        "error": true,
+        "message": error.message
+      });
+  });
+}
+
+const getProjectMachineryList = (request, response, pool) => {
+  const { projectPk } = request.body
+  pool.then(pool => {
+    const request = new mssql.Request(pool);
+    request.input("inProjectPk", mssql.UniqueIdentifier, projectPk);
+    request.execute("uspGetMachineryInProjectList", (error, results) => {
       if (error) {
         response
           .status(500)
@@ -163,9 +304,14 @@ const updateProject = (request, response, pool) => {
 }
 
 module.exports = {
+  addMachineryToProject,
   createProject,
+  deleteMachineryFromProject,
   getIndustryList,
   getProject,
+  getProjectInformation,
   getProjectList,
+  getProjectMachineryList,
+  getMachineryListToAdd,
   updateProject
 }

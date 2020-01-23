@@ -26,6 +26,10 @@ APP.post("/machinery/machinery/list/", (request, response) => {
   MACHINERY_ENDPOINTS.getMachineryList(request, response, POOL);
 });
 
+APP.post("/machinery/project/list/", (request, response) => {
+  MACHINERY_ENDPOINTS.getMachineryProjectList(request, response, POOL);
+});
+
 APP.post("/machinery/machinery-type/list/", (request, response) => {
   MACHINERY_ENDPOINTS.getMachineryTypeList(request, response, POOL);
 });
@@ -54,6 +58,10 @@ APP.post("/project/project/", (request, response) => {
   PROJECT_ENDPOINTS.getProject(request, response, POOL);
 });
 
+APP.post("/project/project/information/", (request, response) => {
+  PROJECT_ENDPOINTS.getProjectInformation(request, response, POOL);
+});
+
 APP.post("/project/project/list/", (request, response) => {
   PROJECT_ENDPOINTS.getProjectList(request, response, POOL);
 });
@@ -61,6 +69,24 @@ APP.post("/project/project/list/", (request, response) => {
 APP.post("/project/project/create/", (request, response) => {
   PROJECT_ENDPOINTS.createProject(request, response, POOL);
 });
+
+APP.post("/project/machinery/list-to-add/", (request, response) => {
+  PROJECT_ENDPOINTS.getMachineryListToAdd(request, response, POOL);
+});
+
+APP.post("/project/machinery/list/", (request, response) => {
+  PROJECT_ENDPOINTS.getProjectMachineryList(request, response, POOL);
+});
+
+APP.post("/project/machinery/add/", (request, response) => {
+  PROJECT_ENDPOINTS.addMachineryToProject(request, response, POOL);
+});
+
+
+APP.post("/project/machinery/delete/", (request, response) => {
+  PROJECT_ENDPOINTS.deleteMachineryFromProject(request, response, POOL);
+});
+
 
 APP.post("/project/project/update/", (request, response) => {
   PROJECT_ENDPOINTS.updateProject(request, response, POOL);
